@@ -14,9 +14,16 @@ const Home = () => {
   }, []);
 
   const handleEdit = (id) => {
-    axios.put(`http://localhost:3000/update/${id}`) // Include forward slash before id
+    axios.put('http://localhost:3000/update/${id}') // Include forward slash before id
       .then(result => {
-        location.reload(); // Reload the page after edit
+        const updatedTodos = todos.map(todo => {
+          if (todo._id === id) {
+            return { ...todo, done: true }; // Update the done status
+          } else {
+            return todo;
+          }
+        });
+        setTodos(updatedTodos); // Update local state
       })
       .catch(err => console.log(err));
   };
@@ -24,7 +31,8 @@ const Home = () => {
   const handleDelete = (id) => {
     axios.delete(`http://localhost:3000/delete/${id}`) // Include forward slash before id
       .then(result => {
-        location.reload(); // Reload the page after delete
+        const updatedTodos = todos.filter(todo => todo._id !== id); // Remove deleted todo
+        setTodos(updatedTodos); // Update local state
       })
       .catch(err => console.log(err)); 
   }
